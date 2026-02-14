@@ -1,4 +1,12 @@
 package org.example.messageservice.dto;
 
-public record MessageResponse() {
+import java.time.Instant;
+
+public record MessageResponse(
+        Long id,
+        Long senderId,
+        Long receiverId,
+        String content,
+        Instant createdAt
+) {
 }

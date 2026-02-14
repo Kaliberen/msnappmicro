@@ -1,3 +1,22 @@
+server:
+  port: 8001 # Port for this microservice
+
 spring:
-  application:
-    name: message-service
+  datasource:
+    url: jdbc:h2:mem:messagedb # In-memory H2 database
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update # Flyway tar ansvar for schema
+    show-sql: true
+    open-in-view: false
+
+  h2:
+    console:
+      enabled: true # Activate H2 console
+      path: /h2-console
+
+user-service:
+  base-url: http://localhost:8000

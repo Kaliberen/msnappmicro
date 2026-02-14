@@ -13,7 +13,7 @@ public class UserMapper {
         user.setUsername(req.username());
         user.setDisplayName(req.displayName());
         user.setEmail(req.email());
-        user.setFriendsIds(req.friendIds() == null ? new ArrayList<>()
+        user.setFriendIds(req.friendIds() == null ? new ArrayList<>()
                 : new ArrayList<>(req.friendIds()));
         return user;
     }
@@ -24,7 +24,7 @@ public class UserMapper {
                 user.getUsername(),
                 user.getDisplayName(),
                 user.getEmail(),
-                user.getFriendsIds()
+                user.getFriendIds()
         );
     }
 }

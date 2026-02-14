@@ -23,7 +23,7 @@ public class User {
     private String displayName;
     private String email;
 
-    @ElementCollection
-    private List<Long> friendsIds = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Long> friendIds = new ArrayList<>();
     // List with ID-er for friends
 }

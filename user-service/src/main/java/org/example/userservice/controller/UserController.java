@@ -6,8 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.userservice.dto.UserRequest;
 import org.example.userservice.dto.UserResponse;
 import org.example.userservice.mapper.UserMapper;
-import org.example.userservice.model.User;
-import org.example.userservice.service.UserService;
+import org.example.userservice.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
