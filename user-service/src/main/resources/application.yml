@@ -1,0 +1,19 @@
+server:
+  port: 8000 # Port for this microservice
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:userdb # In-memory H2 database
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update # Flyway tar ansvar for schema
+    show-sql: true
+    open-in-view: false
+
+  h2:
+    console:
+      enabled: true # Activate H2 console
+      path: /h2-console
