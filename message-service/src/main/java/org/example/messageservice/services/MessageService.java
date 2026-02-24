@@ -2,6 +2,7 @@ package org.example.messageservice.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.messageservice.dto.NotificationRequest;
 import org.example.messageservice.model.Message;
 import org.example.messageservice.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,8 +23,13 @@ public class MessageService {
     // RestClient replacement for RestTemplate
     private final RestClient restClient = RestClient.create();
 
+
     @Value("${user-service.base-url}")
     private  String userServiceBaseUrl;
+
+    @Value("${notification-service.base-url}")
+    private  String notificationServiceBaseUrl;
+
 
     // Validate if a user exist by calling user-service
     private void validateUserExists(Long userId) {
@@ -40,6 +46,29 @@ public class MessageService {
         }
     }
 
+    private void createNotificationForReceiver(Message savedMessage) {
+
+        // check for value
+        log.info("Notification-service.base-url={}", notificationServiceBaseUrl);
+
+        try {
+            restClient.post()
+                    .uri(notificationServiceBaseUrl + "/notifications")
+                    .body(new NotificationRequest(
+                            savedMessage.getReceiverId(),
+                            "MESSAGE",
+                            "New message from user " +  savedMessage.getSenderId()
+                    ))
+                    .retrieve()
+                    .toBodilessEntity();
+            log.debug("Notification created for receiverId={}", savedMessage.getReceiverId());
+        }  catch (Exception e) {
+            log.warn("Could not reach notification-service. Message saved. receiverId={}",
+                    savedMessage.getReceiverId(), e);
+        }
+    }
+
+
     // Sends a message between two users
     public Message sendMessage(Message message) {
 
@@ -51,7 +80,11 @@ public class MessageService {
                 message.getSenderId(),
                 message.getReceiverId());
 
-        return messageRepository.save(message);
+        Message savedMessage = messageRepository.save(message);
+
+        createNotificationForReceiver(savedMessage);
+
+        return savedMessage;
     }
 
     // Get all messages for given receiver.

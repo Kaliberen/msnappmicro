@@ -1,0 +1,34 @@
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - "8000:8000"
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "8002:8002"
+    depends_on:
+      - user-service
+
+  message-service:
+    build: ./message-service
+    ports:
+      - "8001:8001"
+    environment:
+      USER_SERVICE_BASE_URL: http://user-service:8000
+      NOTIFICATION_SERVICE_BASE_URL: http://notification-service:8002
+    depends_on:
+      - user-service
+      - notification-service
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15572"   # UI (admin)
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBIT_DEFAULT_PASS: guest
+

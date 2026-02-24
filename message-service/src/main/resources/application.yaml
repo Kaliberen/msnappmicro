@@ -19,4 +19,7 @@ spring:
       path: /h2-console
 
 user-service:
-  base-url: http://localhost:8000
+  base-url: ${USER_SERVICE_BASE_URL:http://localhost:8000}
+
+notification-service:
+  base-url: ${NOTIFICATION_SERVICE_BASE_URL:http://localhost:8002}

@@ -26,8 +26,8 @@ public class MessageController {
         );
     }
 
-    @GetMapping("/sent/{senderID}")
-    public List<MessageResponse> sent(@PathVariable("senderId") Long senderId){
+    @GetMapping("/sent/{senderId}")
+    public List<MessageResponse> sent(@PathVariable Long senderId){
         return messageService.getMessagesBySender(senderId)
                 .stream()
                 .map(MessageMapper::toResponse)
