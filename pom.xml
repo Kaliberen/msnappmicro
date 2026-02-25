@@ -20,6 +20,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>gateway-service</module>
         <module>user-service</module>
         <module>message-service</module>
         <module>notification-service</module>
@@ -29,16 +30,19 @@
         <!-- Standard for Spring Boot -->
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-cloud.version>2023.0.6</spring-cloud.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-actuator</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 
 </project>

@@ -14,6 +14,20 @@ services:
       retries: 20
 
 
+  gateway-service:
+    build:
+      context: .
+      dockerfile: gateway-service/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      user-service:
+        condition: service_started
+      message-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+
   user-service:
     build:
       context: .
@@ -57,3 +71,4 @@ services:
         condition: service_started
       rabbitmq:
         condition: service_healthy
+
