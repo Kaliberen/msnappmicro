@@ -1,34 +1,4 @@
 services:
-  user-service:
-    build: ./user-service
-    ports:
-      - "8000:8000"
-
-  notification-service:
-    build: ./notification-service
-    ports:
-      - "8002:8002"
-
-    environment:
-      RABBITMQ_HOST: rabbitmq
-    depends_on:
-      - user-service
-      - rabbitmq
-
-  message-service:
-    build: ./message-service
-    ports:
-      - "8001:8001"
-    environment:
-      USER_SERVICE_BASE_URL: http://user-service:8000
-      NOTIFICATION_SERVICE_BASE_URL: http://notification-service:8002
-      RABBITMQ_HOST: rabbitmq
-    depends_on:
-      - user-service
-      - notification-service
-      - rabbitmq
-
-
   rabbitmq:
     image: rabbitmq:3-management
     ports:
@@ -36,5 +6,42 @@ services:
       - "15672:15672"   # UI (admin)
     environment:
       RABBITMQ_DEFAULT_USER: guest
-      RABBIT_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_PASS: guest
 
+
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    ports:
+      - "8000:8000"
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+    depends_on:
+      - rabbitmq
+
+  message-service:
+    build:
+      context: .
+      dockerfile: message-service/Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      USER_SERVICE_BASE_URL: http://user-service:8000
+      NOTIFICATION_SERVICE_BASE_URL: http://notification-service:8002
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+    depends_on:
+      - user-service
+      - notification-service
+      - rabbitmq
