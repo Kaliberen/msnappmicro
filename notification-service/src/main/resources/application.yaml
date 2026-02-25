@@ -1,3 +1,9 @@
 server:
   port: 8002 # Port for this microservice
 
+spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: 5672
+    username: guest
+    password: guest

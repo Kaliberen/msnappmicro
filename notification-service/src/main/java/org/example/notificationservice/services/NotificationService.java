@@ -30,7 +30,9 @@ public class NotificationService {
         return notificationRepository.save(notification);
     }
 
+
     public List<Notification> getByUserId(Long userId) {
         return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }
+
 }
