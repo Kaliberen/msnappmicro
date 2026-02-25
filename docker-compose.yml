@@ -7,6 +7,11 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
 
 
   user-service:
@@ -15,6 +20,9 @@ services:
       dockerfile: user-service/Dockerfile
     ports:
       - "8000:8000"
+    depends_on:
+     rabbitmq:
+       condition: service_healthy
 
   notification-service:
     build:
@@ -27,7 +35,8 @@ services:
       RABBITMQ_USERNAME: guest
       RABBITMQ_PASSWORD: guest
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
 
   message-service:
     build:
@@ -42,6 +51,9 @@ services:
       RABBITMQ_USERNAME: guest
       RABBITMQ_PASSWORD: guest
     depends_on:
-      - user-service
-      - notification-service
-      - rabbitmq
+      user-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
