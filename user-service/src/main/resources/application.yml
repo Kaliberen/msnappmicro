@@ -9,7 +9,7 @@ spring:
     password:
   jpa:
     hibernate:
-      ddl-auto: update # Flyway tar ansvar for schema
+      ddl-auto: update
     show-sql: true
     open-in-view: false
 
@@ -17,3 +17,12 @@ spring:
     console:
       enabled: true # Activate H2 console
       path: /h2-console
+
+management:
+  endpoint:
+    info:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info

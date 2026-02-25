@@ -31,3 +31,14 @@ user-service:
 
 notification-service:
   base-url: ${NOTIFICATION_SERVICE_BASE_URL:http://localhost:8002}
+
+
+management:
+  endpoint:
+    info:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
