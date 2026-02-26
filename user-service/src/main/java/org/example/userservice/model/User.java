@@ -21,6 +21,8 @@ public class User {
     private String username; // Username must be nique, not null
 
     private String displayName;
+
+    @Column(unique = true, nullable = false) // email unique
     private String email;
 
     @ElementCollection(fetch = FetchType.EAGER)

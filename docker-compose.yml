@@ -1,6 +1,7 @@
 services:
   rabbitmq:
     image: rabbitmq:3-management
+    container_name: rabbitmq
     ports:
       - "5672:5672"     # AMQP
       - "15672:15672"   # UI (admin)
@@ -12,12 +13,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 20
-
+    networks:
+      - app-net
 
   gateway-service:
     build:
       context: .
       dockerfile: gateway-service/Dockerfile
+    container_name: gateway-service
     ports:
       - "8080:8080"
     depends_on:
@@ -27,21 +30,27 @@ services:
         condition: service_started
       notification-service:
         condition: service_started
+    networks:
+      - app-net
 
   user-service:
     build:
       context: .
       dockerfile: user-service/Dockerfile
+    container_name: user-service
     ports:
       - "8000:8000"
     depends_on:
      rabbitmq:
        condition: service_healthy
+    networks:
+      - app-net
 
   notification-service:
     build:
       context: .
       dockerfile: notification-service/Dockerfile
+    container_name: notification-service
     ports:
       - "8002:8002"
     environment:
@@ -51,11 +60,14 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    networks:
+      - app-net
 
   message-service:
     build:
       context: .
       dockerfile: message-service/Dockerfile
+    container_name: message-service
     ports:
       - "8001:8001"
     environment:
@@ -71,4 +83,9 @@ services:
         condition: service_started
       rabbitmq:
         condition: service_healthy
+    networks:
+      - app-net
 
+networks:
+  app-net:
+    driver: bridge

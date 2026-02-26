@@ -11,8 +11,11 @@ user-service
 - - UserRequest
 - - UserResponse
 - mapper 
-- -
+- - UserMapper
 - model
+- - Profile
+- - User
 - repository
-- service
-- - -
+- - UserRepository
+- services
+- - UserService 
