@@ -1,8 +1,17 @@
 # Read me
-- - -  
-## checklist
 - - -
-### msnappmicro
+## msnappmicro
+
+
+### Build and run with Docker
+- Start project: 
+- - docker compose up --build -d
+- Stop project
+- - docker compose down
+- Check status
+- - docker compose ps
+
+
 - - -
 user-service
 - controller
