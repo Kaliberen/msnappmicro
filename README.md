@@ -1,3 +1,6 @@
+[![CI](https://github.com/Kaliberen/msnappmicro/actions/workflows/ci.yml/badge.svg)](https://github.com/Kaliberen/msnappmicro/actions/workflows/ci.yml)
+[![CD](https://github.com/Kaliberen/msnappmicro/actions/workflows/cd.yml/badge.svg)](https://github.com/Kaliberen/msnappmicro/actions/workflows/cd.yml)
+
 # MSNappMicro - Microservices Messaging System
 
 ## Overview
@@ -125,7 +128,7 @@ mvn spring-boot:run
 ### All requests should be sent via the Gateway (port 8080).
 ### OBS: Must create two users before test messaging
 
-## Postman use 
+### With postman
 
 ### 1. Create Users
 
@@ -202,7 +205,6 @@ You should see event handling logs.
 - - `mvn -pl gateway-service test`
 
 
-
 - - -
 
 ## Assumptions & Simplifications
@@ -213,21 +215,57 @@ You should see event handling logs.
 
 - - -
 
-## CI/CD
+## CI/CD (GitHub Actions)
 
-**The project structure supports CI/CD integration.
-It builds with:**
+This repository uses GitHub Actions to ensure the project is buildable and testable, and support deployment automation.
 
-- `mvn clean install`
-- Starts with `docker compose up`
-- Uses health endpoints
-- Is structured for integration into a CI/CD pipeline
+### Continuos Integration (CI)
+**Workflow:** `.github/workflows/ci.yml`
+
+**Triggered on:**
+- every `push`
+- every `pull request`
+
+**What it does:**
+- sets up Java 17
+- runs `mvn -B clean verify` (build + tests)
+- runs `docker compose build` (verifies Docker images can be built)
+
+**How to verify:**
+- Go to GitHub -> **Actions** -> **CI** and check the latest run logs.
+
+### Continuous Delivery (CD)
+**Workflow:** `.github/workflows/cd.yml`
+
+**Triggered on:**
+- push to the default branch `main`
+
+**What it does:**
+- logs in to DockerHub using GitHub Secrets
+- builds Docker images using `docker compose build` 
+- tags and pushes images to DockerHub:
+- `msnappmicro-gateway-service:latest`
+- `msnappmicro-user-service:latest`
+- `msnappmicro-message-service:latest`
+- `msnappmicro-notification-service:latest`
+
+**Required GitHub Secrets:**
+- `DOCKERHUB_USERNAME`
+- `DOCKERHUB_TOKEN` (DockerHub access token with **Read & Write** permissions)
+
+**How to verify:**
+- Go to GitHub -> **Actions -> **CD** and check the logs.
+- Check DockerHub repositories for updated image tags.
 
 - - -
 
 ## Project structure
 ```
 msnappmicro/
+|---.github/
+|      |---workflows/
+|             |---cd.yml
+|             |---ci.yml
 |---gateway-service/
 |      |---src/
 |      |---Dockerfile
