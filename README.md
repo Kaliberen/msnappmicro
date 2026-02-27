@@ -4,7 +4,7 @@
 
 #### MSNappMicro is a microservice-based messaging system inspired by the classic MSN Messenger.
 
-The system consist of four services:
+The system consists of four services:
 
 - **gateway-service** - single entry point to the system (Spring Cloud Gateway)
 - **user-service** - manages users (CRUD operations)
@@ -40,7 +40,7 @@ The system consist of four services:
 - **Docker Desktop (with Compose v2)**
 - **Java 17** (only required if running locally without Docker)
 - - -
-## Run with Docker Compose (Recommended)
+##  Run with Docker Compose (Recommended)
 
 ### 1. From the project root folder:
 ```bash
@@ -67,6 +67,41 @@ docker compose down
 docker compose down -v
 ```
 - - -
+
+## Run locally (without Docker)
+
+### 1. From the project root folder:
+
+`mvn clean install` 
+
+**Then start each service individually**
+
+**user-service:** 
+```bash
+cd user-service
+mvn spring-boot:run
+```
+
+**message-service:**
+```bash
+cd message-service
+mvn spring-boot:run
+```
+
+**notification-service:**
+```bash
+cd notification-service
+mvn spring-boot:run
+```
+
+**gateway-service:**
+```bash
+cd gateway-service
+mvn spring-boot:run
+```
+
+- - -
+
 ## Health checks (Actuator)
 - `gateway-service`: http://localhost:8080/actuator/health
 - `user-service`: http://localhost:8000/actuator/health
@@ -87,8 +122,10 @@ docker compose down -v
 - - -
 
 ## Functional Test Scenarios
-### All request should be sent via the Gateway (port 8080).
+### All requests should be sent via the Gateway (port 8080).
 ### OBS: Must create two users before test messaging
+
+## Postman
 
 ### 1. Create Users
 
@@ -123,7 +160,7 @@ POST `/messages`
 ``` 
 {
    "senderId": 1,
-   "receiver": 2,
+   "receiverId": 2,
    "content": "Hello Dan!"
 }
 ```
@@ -146,6 +183,26 @@ docker compose logs notification-service
 
 You should see event handling logs.
 
+
+## Testing
+
+### Run all tests (root)
+
+`mvn test`
+
+### Run tests for a single service
+
+- **user-service**
+- - `mvn -pl user-service test`
+- **message-service**
+- - `mvn -pl message-service test`
+- **notification-service**
+- - `mvn -pl notification-service test`
+- **gateway-service**
+- - `mvn -pl gateway-service test`
+
+
+
 - - -
 
 ## Assumptions & Simplifications
@@ -156,10 +213,12 @@ You should see event handling logs.
 
 - - -
 
-## CI/CD Ready
+## CI/CD
 
-**The project:**
-- Builds with `mvn clean install`
+**The project structure supports CI/CD integration.
+It builds with:**
+
+- `mvn clean install`
 - Starts with `docker compose up`
 - Uses health endpoints
 - Is structured for integration into a CI/CD pipeline
