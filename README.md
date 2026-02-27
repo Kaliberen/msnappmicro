@@ -125,7 +125,7 @@ mvn spring-boot:run
 ### All requests should be sent via the Gateway (port 8080).
 ### OBS: Must create two users before test messaging
 
-## Postman
+## Postman use 
 
 ### 1. Create Users
 
