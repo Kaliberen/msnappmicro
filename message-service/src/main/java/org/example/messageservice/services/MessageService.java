@@ -28,11 +28,11 @@ public class MessageService {
 
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${user-service.base-url}")
+    @Value("${user.service.base-url}")
     private  String userServiceBaseUrl;
 
-    @Value("${notification-service.base-url}")
-    private  String notificationServiceBaseUrl;
+    @Value("${notification.service.base-url}")
+    private String notificationServiceBaseUrl;
 
 
     // Validate if a user exist by calling user-service

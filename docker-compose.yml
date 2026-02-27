@@ -24,7 +24,9 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      user-service:
+      user-service-1:
+        condition: service_started
+      user-service-2:
         condition: service_started
       message-service:
         condition: service_started
@@ -33,16 +35,33 @@ services:
     networks:
       - app-net
 
-  user-service:
+  user-service-1:
     build:
       context: .
       dockerfile: user-service/Dockerfile
-    container_name: user-service
-    ports:
-      - "8000:8000"
+    container_name: user-service-1
+    environment:
+      SERVER_PORT: 8000
+    expose:
+      - "8000"
     depends_on:
-     rabbitmq:
-       condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-net
+
+  user-service-2:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    container_name: user-service-2
+    environment:
+      SERVER_PORT: 8000
+    expose:
+      - "8000"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - app-net
 
@@ -71,18 +90,23 @@ services:
     ports:
       - "8001:8001"
     environment:
-      USER_SERVICE_BASE_URL: http://user-service:8000
+      USER_SERVICE_BASE_URL: http://gateway-service:8080
+      USER_SERVICE_BASE_URL__DUMMY: ignore
+      USER_SERVICE_BASE_URL_ALT: ignore
+      USER_SERVICE_BASE_URL2: ignore
       NOTIFICATION_SERVICE_BASE_URL: http://notification-service:8002
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_USERNAME: guest
       RABBITMQ_PASSWORD: guest
     depends_on:
-      user-service:
+      rabbitmq:
+        condition: service_healthy
+      user-service-1:
+        condition: service_started
+      user-service-2:
         condition: service_started
       notification-service:
         condition: service_started
-      rabbitmq:
-        condition: service_healthy
     networks:
       - app-net
 

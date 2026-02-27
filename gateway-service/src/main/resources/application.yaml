@@ -1,26 +1,42 @@
-server:
+sserver:
   port: 8080
 
 spring:
   cloud:
     gateway:
       routes:
-        - id: user-service
-          uri: http://user-service:8000
+        # LB demo (MUST be first)
+        - id: user-service-lb-demo
+          uri: lb://user-service
+          predicates:
+            - Path=/users/instance
+
+        # Stable users API (none “split brain”)
+        - id: user-service-stable
+          uri: http://user-service-1:8000
           predicates:
             - Path=/users,/users/**
+
         - id: message-service
           uri: http://message-service:8001
           predicates:
             - Path=/messages,/messages/**
+
         - id: notification-service
           uri: http://notification-service:8002
           predicates:
             - Path=/notifications,/notifications/**
+
+    discovery:
+      client:
+        simple:
+          instances:
+            user-service:
+              - uri: http://user-service-1:8000
+              - uri: http://user-service-2:8000
 
 management:
   endpoints:
     web:
       exposure:
         include: health,info
-

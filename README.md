@@ -128,11 +128,13 @@ mvn spring-boot:run
 ### All requests should be sent via the Gateway (port 8080).
 ### OBS: Must create two users before test messaging
 
-### With postman
+### With postman:
 
 ### 1. Create Users
 
 POST `/users`
+
+http://localhost:8080/users
 
 **Example:**
 ```
@@ -151,15 +153,24 @@ POST `/users`
    "friendIds": []
 }
 ```
+GET http://localhost:8080/users
+
+- show all users 
+
 Expected:
 - HTTP 200
 - User object with generated `id`
+
+
 
 - - -
 
 ### 2. Send Message
 
+
 POST `/messages`
+
+http://localhost:8080/messages
 ``` 
 {
    "senderId": 1,
@@ -171,6 +182,10 @@ POST `/messages`
 Expected:
 - HTTP 200
 - Message object with `id` and `createdAt`
+
+
+#### Check messages
+GET http://localhost:8080/messages/inbox/2
 
 - - - 
 
@@ -186,6 +201,26 @@ docker compose logs notification-service
 
 You should see event handling logs.
 
+### Testing notifications (asynchronous communication)
+```
+1. Send a message:
+   POST /messages
+   {
+   "senderId": 1,
+   "receiverId": 2,
+   "content": "Hello"
+   }
+
+2. Fetch notifications:
+   GET /notifications/2
+
+This verifies:
+- Asynchronous event-based communication (RabbitMQ)
+- MessageService publishes event
+- NotificationService consumes event
+- Gateway routing works correctly
+
+```
 
 ## Testing
 
